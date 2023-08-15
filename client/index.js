@@ -25,7 +25,9 @@ ws.on('message', (message) => {
     fs.writeFileSync(filePath, message)
     console.log(`playing ${filename}`)
     player.play(filePath, () => {
-      fs.unlink(filePath, () => {})
+      fs.unlink(filePath, () => {
+        console.log(`deleted ${filename}`)
+      })
     })
   }
 })
