@@ -10,7 +10,9 @@ if (!fs.existsSync(FILE_OUTPUT_DIR)) {
   fs.mkdirSync(FILE_OUTPUT_DIR)
 }
 
-const ws = new WebSocket('ws://localhost:6000')
+const ws = new WebSocket(
+  'wss://meme-api.mnabl4k4acnv4.eu-central-1.cs.amazonlightsail.com'
+)
 
 ws.on('open', () => {
   console.log('Connected to WebSocket server')
