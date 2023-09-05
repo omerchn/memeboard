@@ -5,18 +5,35 @@ const player = require('play-sound')({})
 
 const FILE_OUTPUT_DIR = path.join(__dirname, 'files')
 
-if (!fs.existsSync(FILE_OUTPUT_DIR)) {
-  fs.mkdirSync(FILE_OUTPUT_DIR)
-}
+fs.rmSync(FILE_OUTPUT_DIR, { recursive: true, force: true })
+fs.mkdirSync(FILE_OUTPUT_DIR)
 
 const processes = []
-const killProcesses = () => {
+
+const playFile = (filePath) => {
   processes.forEach((proc) => {
     proc.kill()
   })
+  const proc = player.play(filePath, (err) => {
+    if (err) {
+      console.error('Error playing the file:', err)
+    }
+  })
+  if (proc) processes.push(proc)
 }
 
-module.exports = (url) => {
+module.exports = ({ url, meme }) => {
+  if (!url || !meme) {
+    console.error('url and meme required.')
+    return
+  }
+
+  const filePath = path.join(FILE_OUTPUT_DIR, meme)
+
+  if (fs.existsSync(filePath)) {
+    return playFile(filePath)
+  }
+
   try {
     console.log('Downloading file from:', url)
 
@@ -26,8 +43,7 @@ module.exports = (url) => {
         return
       }
 
-      const fileName = `${Date.now()}.mp3`
-      const filePath = path.join(FILE_OUTPUT_DIR, fileName)
+      const filePath = path.join(FILE_OUTPUT_DIR, meme)
       const writeStream = fs.createWriteStream(filePath)
 
       console.log('Saving file')
@@ -36,18 +52,7 @@ module.exports = (url) => {
       writeStream.on('finish', () => {
         writeStream.close()
         console.log('Playing file')
-        killProcesses()
-        const proc = player.play(filePath, (err) => {
-          if (err) {
-            console.error('Error playing the file:', err)
-          }
-
-          fs.unlink(filePath, () => {
-            console.log('Deleted file')
-          })
-        })
-
-        if (proc) processes.push(proc)
+        playFile(filePath)
       })
 
       writeStream.on('error', (err) => {

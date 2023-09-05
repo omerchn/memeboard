@@ -1,8 +1,7 @@
 const wsUrl = 'wss://meme-api.omercohen.dev'
-// const wsUrl = 'ws://localhost:6000'
 
 const WebSocket = require('ws')
-const playUrl = require('./play-url')
+const playMeme = require('./play-meme')
 
 let ws
 
@@ -16,7 +15,11 @@ const connect = () => {
   })
 
   ws.on('message', (message) => {
-    playUrl(message.toString())
+    try {
+      playMeme(JSON.parse(message.toString()))
+    } catch {
+      console.error(`Bad message. expected JSON, got: ${message}`)
+    }
   })
 
   ws.on('close', () => {

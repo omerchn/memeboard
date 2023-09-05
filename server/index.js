@@ -19,7 +19,7 @@ app.use('/upload', uploadRouter)
 app.use('/play', playRouter)
 app.use('/bucket', bucketRouter)
 
-const PORT = process.env.PORT || 6000
+const PORT = process.env.PORT || 6060
 server.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`)
 })

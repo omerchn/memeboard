@@ -52,7 +52,7 @@ router.post('/bucket/memes', async (req, res) => {
 
     clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(url)
+        client.send(JSON.stringify({ url, meme }))
       }
     })
 
