@@ -1,5 +1,5 @@
-// const wsUrl = 'wss://meme-api.omercohen.dev'
-const wsUrl = 'ws://localhost:6000'
+const wsUrl = 'wss://meme-api.omercohen.dev'
+// const wsUrl = 'ws://localhost:6000'
 
 const WebSocket = require('ws')
 const playUrl = require('./play-url')
