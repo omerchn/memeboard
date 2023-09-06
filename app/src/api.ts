@@ -24,3 +24,17 @@ export const playMeme = async (memeKey: string) => {
     throw new Error('Failed to play meme')
   }
 }
+
+export const uploadFile = async (file: File) => {
+  const data = new FormData()
+  data.append('file', file)
+
+  const res = await fetch(`${apiUrl}/upload/mp3`, {
+    method: 'POST',
+    body: data,
+  })
+
+  if (!res.ok) {
+    throw new Error('Failed to play meme')
+  }
+}

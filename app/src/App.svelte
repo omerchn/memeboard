@@ -2,6 +2,7 @@
   import { getMemes } from './api'
   import { onMount } from 'svelte'
   import MemeCard from './lib/MemeCard.svelte'
+  import Upload from './lib/Upload.svelte'
 
   let memes:
     | Array<{
@@ -10,17 +11,22 @@
     | undefined
 
   onMount(async () => {
-    memes = await getMemes()
+    await fetchMemes()
   })
+
+  const fetchMemes = async () => {
+    memes = await getMemes()
+  }
 </script>
 
 <main>
   {#if !!memes}
-    {#each memes as meme}
+    {#each memes.reverse() as meme}
       <MemeCard memeKey={meme.Key} />
     {/each}
   {/if}
 </main>
+<Upload refetch={fetchMemes} />
 
 <style>
   main {
