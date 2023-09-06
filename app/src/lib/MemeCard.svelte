@@ -2,6 +2,7 @@
   import { playMeme } from '../api'
 
   export let memeKey: string
+
   const play = async () => {
     await playMeme(memeKey)
   }
@@ -12,9 +13,3 @@
     {memeKey}
   </button>
 </div>
-
-<style>
-  .card {
-    margin: 0.5em;
-  }
-</style>

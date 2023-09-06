@@ -26,5 +26,7 @@
   main {
     padding: 2em;
     display: flex;
+    gap: 1em;
+    flex-wrap: wrap;
   }
 </style>
