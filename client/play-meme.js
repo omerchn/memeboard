@@ -31,35 +31,38 @@ module.exports = ({ url, meme }) => {
   const filePath = path.join(FILE_OUTPUT_DIR, meme)
 
   if (fs.existsSync(filePath)) {
+    console.log(`Playing ${meme}`)
     return playFile(filePath)
   }
 
   try {
-    console.log('Downloading file from:', url)
+    console.log(`Downloading ${meme} from:`, url)
 
     https.get(url, (response) => {
       if (response.statusCode !== 200) {
-        console.error(`Error getting file. status code: ${response.statusCode}`)
+        console.error(
+          `Error downloading file. status code: ${response.statusCode}`
+        )
         return
       }
 
       const filePath = path.join(FILE_OUTPUT_DIR, meme)
       const writeStream = fs.createWriteStream(filePath)
 
-      console.log('Saving file')
+      console.log(`Saving ${meme}`)
       response.pipe(writeStream)
 
       writeStream.on('finish', () => {
         writeStream.close()
-        console.log('Playing file')
+        console.log(`Playing ${meme}`)
         playFile(filePath)
       })
 
       writeStream.on('error', (err) => {
-        console.error('Error saving the file:', err)
+        console.error(`Error saving the ${meme}:`, err)
       })
     })
   } catch (err) {
-    console.error(`Failed to get url ${url}:`, err.message)
+    console.error(`Failed to make a request to url ${url}:`, err.message)
   }
 }
