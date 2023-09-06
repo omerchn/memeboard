@@ -2,17 +2,19 @@ const fs = require('fs')
 const https = require('https')
 const path = require('path')
 const player = require('play-sound')({})
+const kill = require('tree-kill')
 
 const FILE_OUTPUT_DIR = path.join(__dirname, 'files')
 
 fs.rmSync(FILE_OUTPUT_DIR, { recursive: true, force: true })
 fs.mkdirSync(FILE_OUTPUT_DIR)
 
-const processes = []
+let processes = []
 
 const playFile = (filePath) => {
   processes.forEach((proc) => {
-    proc.kill()
+    kill(proc.pid)
+    processes = []
   })
   const proc = player.play(filePath, (err) => {
     if (err) {
