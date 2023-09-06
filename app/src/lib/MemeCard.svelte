@@ -1,11 +1,11 @@
 <script lang="ts">
   import { playMeme } from '../api'
 
-  export let memeKey: string
+  export let memeId: string
   let memeName: string
 
   $: {
-    const split = memeKey.split('-')
+    const split = memeId.split('-')
     if (split.length === 1) {
       memeName = split[0]
     } else {
@@ -15,7 +15,11 @@
   }
 
   const play = async () => {
-    await playMeme(memeKey)
+    try {
+      await playMeme(memeId)
+    } catch (err) {
+      alert(err)
+    }
   }
 </script>
 
@@ -23,7 +27,7 @@
   <button on:click={play}>
     play {memeName}
   </button>
-  <span>id: {memeKey}</span>
+  <span>id: {memeId}</span>
 </div>
 
 <style>

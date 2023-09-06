@@ -4,31 +4,29 @@
   import MemeCard from './lib/MemeCard.svelte'
   import Upload from './lib/Upload.svelte'
 
-  let memes:
-    | Array<{
-        Key: string
-      }>
-    | undefined
-
-  onMount(async () => {
-    await fetchMemes()
-  })
+  let memes: Array<string> | undefined
 
   const fetchMemes = async () => {
-    memes = await getMemes()
+    try {
+      memes = await getMemes()
+    } catch (err) {
+      alert(err)
+    }
   }
+
+  onMount(fetchMemes)
 </script>
 
 <main>
   {#if !!memes}
     {#each memes.reverse() as meme}
-      <MemeCard memeKey={meme.Key} />
+      <MemeCard memeId={meme} />
     {/each}
   {:else}
     <span>Getting memes...</span>
   {/if}
 </main>
-<Upload refetch={fetchMemes} />
+<Upload onUploadDone={fetchMemes} />
 
 <style>
   main {

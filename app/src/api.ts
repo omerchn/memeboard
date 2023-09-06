@@ -10,15 +10,11 @@ export const getMemes = async () => {
   return memes
 }
 
-export const playMeme = async (memeKey: string) => {
+export const playMeme = async (meme: string) => {
   const res = await fetch(`${apiUrl}/play/bucket/memes`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      meme: memeKey,
-    }),
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ meme }),
   })
   if (!res.ok) {
     throw new Error('Failed to play meme')
@@ -35,6 +31,6 @@ export const uploadFile = async (file: File) => {
   })
 
   if (!res.ok) {
-    throw new Error('Failed to play meme')
+    throw new Error('Failed to upload meme')
   }
 }

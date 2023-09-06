@@ -4,7 +4,7 @@
   } from 'svelte-file-dropzone/Dropzone.svelte'
   import { uploadFile } from '../api'
 
-  export let refetch: () => void
+  export let onUploadDone: () => void
   const accept = '.mp3'
 
   const handleFilesSelect = async (e: DropzoneEvents['drop']) => {
@@ -18,9 +18,9 @@
       if (!confirm) return
       try {
         await uploadFile(file)
-        refetch()
-      } catch {
-        alert('Failed to upload file')
+        onUploadDone()
+      } catch (err) {
+        alert(err)
       }
     }
   }
