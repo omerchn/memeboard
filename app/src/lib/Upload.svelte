@@ -27,5 +27,5 @@
 </script>
 
 <Dropzone on:drop={handleFilesSelect} {accept} multiple={false}>
-  Drop a meme.mp3, on click to select.
+  Drop a meme.mp3, or click to select.
 </Dropzone>
