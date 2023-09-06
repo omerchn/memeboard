@@ -24,6 +24,8 @@
     {#each memes.reverse() as meme}
       <MemeCard memeKey={meme.Key} />
     {/each}
+  {:else}
+    <span>Getting memes...</span>
   {/if}
 </main>
 <Upload refetch={fetchMemes} />
@@ -34,5 +36,10 @@
     display: flex;
     gap: 1em;
     flex-wrap: wrap;
+    text-align: center;
+  }
+
+  span {
+    margin: auto;
   }
 </style>
