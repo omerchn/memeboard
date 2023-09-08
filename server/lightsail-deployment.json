@@ -1,0 +1,28 @@
+{
+  "serviceName": "meme-api",
+  "containers": {
+    "meme-api-2": {
+      "image": "<will be filled in pipeline>",
+      "command": [],
+      "environment": {
+        "AWS_ACCESS_KEY_ID": "<will be filled in pipeline>",
+        "AWS_SECRET_ACCESS_KEY": "<will be filled in pipeline>"
+      },
+      "ports": {
+        "6060": "HTTP"
+      }
+    }
+  },
+  "publicEndpoint": {
+    "containerName": "meme-api-2",
+    "containerPort": 6060,
+    "healthCheck": {
+      "healthyThreshold": 2,
+      "unhealthyThreshold": 2,
+      "timeoutSeconds": 2,
+      "intervalSeconds": 5,
+      "path": "/",
+      "successCodes": "200-499"
+    }
+  }
+}

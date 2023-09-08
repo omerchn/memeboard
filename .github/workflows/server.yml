@@ -1,0 +1,59 @@
+name: Deploy Server to AWS
+
+on:
+  push:
+    branches: [main]
+    paths: [server/**]
+
+defaults:
+  run:
+    working-directory: server
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: Install AWS Lightsail plugin
+        run: |
+          sudo curl "https://s3.us-west-2.amazonaws.com/lightsailctl/latest/linux-amd64/lightsailctl" -o "/usr/local/bin/lightsailctl"
+          sudo chmod +x /usr/local/bin/lightsailctl
+
+      - name: build
+        run: |
+          docker build -t=meme-api .
+
+      - name: Clear previous images
+        run: |
+          AWS_IMAGES=$(aws lightsail get-container-images --region eu-central-1 --service-name meme-api --output text)
+          IMAGE_NAMES=$(echo $AWS_IMAGES | grep -Eo ':meme-api\.meme-api-2\.[0-9]+')
+          echo $IMAGE_NAMES
+          FIRST=0
+          while read LINE; do
+            if [ "$FIRST" -ne 0 ]; then
+              aws lightsail delete-container-image --region eu-central-1 --service-name meme-api --image $LINE;
+            fi
+          FIRST=1;
+          done <<< $IMAGE_NAMES
+
+      - name: Publish image to AWS Lightsail
+        run: aws lightsail push-container-image --region eu-central-1 --service-name meme-api --label meme-api-2 --image meme-api
+
+      - name: Deploy container to AWS Lightsail
+        run: |
+          aws lightsail get-container-images --service-name meme-api | jq --raw-output ".containerImages[0].image" > image.txt
+          jq \
+          --arg image $(cat image.txt) \
+          --arg keyid ${{ secrets.AWS_ACCESS_KEY_ID }} \
+          --arg key ${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+          '.containers."meme-api-2".image = $image | .containers."meme-api-2".environment.AWS_ACCESS_KEY_ID = $keyid | .containers."meme-api-2".environment.AWS_SECRET_ACCESS_KEY = $key' \
+          lightsail-deployment.json > container.json
+          aws lightsail create-container-service-deployment --cli-input-json file://$(pwd)/container.json
