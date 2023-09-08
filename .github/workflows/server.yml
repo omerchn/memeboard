@@ -55,5 +55,5 @@ jobs:
           --arg keyid ${{ secrets.AWS_ACCESS_KEY_ID }} \
           --arg key ${{ secrets.AWS_SECRET_ACCESS_KEY }} \
           '.containers."meme-api-2".image = $image | .containers."meme-api-2".environment.AWS_ACCESS_KEY_ID = $keyid | .containers."meme-api-2".environment.AWS_SECRET_ACCESS_KEY = $key' \
-          lightsail-deployment.json > container.json
+          lightsail-deployment-template.json > container.json
           aws lightsail create-container-service-deployment --cli-input-json file://$(pwd)/container.json
